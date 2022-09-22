@@ -23,6 +23,11 @@ ACannon::ACannon()
 
 void ACannon::Fire()
 {
+	if (NumberOfShellsInTank == 0)
+	{
+		PrintNoShells();
+	}
+
 	if(!isReadyToFire())
 	{
 		return;
@@ -31,11 +36,11 @@ void ACannon::Fire()
 
 	if (CannoType == ECannonType::FireProjectile)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, FString::Printf(TEXT("Fire projectile")));
+		GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Green, FString::Printf(TEXT("Fire projectile")));
 	}
 	else
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, FString::Printf(TEXT("Fire trace")));
+		GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Green, FString::Printf(TEXT("Fire trace")));
 	}
 
 	GetWorld()->GetTimerManager().SetTimer(ReloadTimer, this, &ACannon::Reload, FireRate, false);
@@ -43,6 +48,11 @@ void ACannon::Fire()
 
 void ACannon::FireSpecial()
 {
+	if (NumberOfShellsInTank == 0)
+	{
+		PrintNoShells();
+	}
+
 	if (!isReadyToFire())
 	{
 		return;
@@ -53,11 +63,11 @@ void ACannon::FireSpecial()
 	{
 		if (CannoType == ECannonType::FireProjectile)
 		{
-			GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, FString::Printf(TEXT("Fire projectile (special attack) %i / %i"), i, NumberOfShellsInBurst));
+			GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Green, FString::Printf(TEXT("Fire projectile (special attack) %i / %i"), i, NumberOfShellsInBurst));
 		}
 		else
 		{
-			GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, FString::Printf(TEXT("Fire trace (special attack) %i / %i"), i, NumberOfShellsInBurst));
+			GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Green, FString::Printf(TEXT("Fire trace (special attack) %i / %i"), i, NumberOfShellsInBurst));
 		}
 		
 		//GetWorld()->GetTimerManager().SetTimer(BurstReloadTimer, this, &ACannon::Burst, BurstRate, false);
@@ -68,18 +78,33 @@ void ACannon::FireSpecial()
 
 void ACannon::Reload()
 {
+	ShellsInTank();
+
+	if (NumberOfShellsInTank == 0)
+	{
+		PrintNoShells();
+		bReadyToFire = false;
+		return;
+	}
 	bReadyToFire = true;
 	GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Emerald, FString::Printf(TEXT("RELOAD")));
-}
-
-void ACannon::Burst()
-{
-	
 }
 
 bool ACannon::isReadyToFire()
 {
 	return bReadyToFire;
+}
+
+void ACannon::ShellsInTank()
+{
+	int *pNumberOfShellsInTank = &NumberOfShellsInTank;
+	*pNumberOfShellsInTank = NumberOfShellsInTank -1;
+	GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, FString::Printf(TEXT("Shells in tank - %i"), NumberOfShellsInTank));
+}
+
+void ACannon::PrintNoShells()
+{
+	GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, FString::Printf(TEXT("NO SHELLS")));
 }
 
 void ACannon::BeginPlay()

@@ -18,8 +18,9 @@ public:
 	void Fire();
 	void FireSpecial();
 	void Reload();
-	void Burst();
 	bool isReadyToFire();
+	void ShellsInTank();
+	void PrintNoShells();
 
 	FTimerHandle ReloadTimer;
 	FTimerHandle BurstReloadTimer;

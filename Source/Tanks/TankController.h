@@ -34,4 +34,5 @@ private:
 	void RotateRight(float Value);
 
 	void Fire();
+	void FireSpecial();
 };

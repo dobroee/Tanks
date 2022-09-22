@@ -16,10 +16,13 @@ public:
 	ACannon();
 
 	void Fire();
+	void FireSpecial();
 	void Reload();
+	void Burst();
 	bool isReadyToFire();
 
 	FTimerHandle ReloadTimer;
+	FTimerHandle BurstReloadTimer;
 
 protected:
 	virtual void BeginPlay() override;
@@ -41,6 +44,15 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fire params")
 		float FireDamage = 1.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fire params")
+		int NumberOfShellsInTank = 10;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fire params|Burst")
+		int NumberOfShellsInBurst = 3;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fire params|Burst")
+		float BurstRate = 1.0f;
 
 private:
 	bool bReadyToFire = false;

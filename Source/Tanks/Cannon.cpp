@@ -35,15 +35,46 @@ void ACannon::Fire()
 	}
 	else
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Blue, FString::Printf(TEXT("Fire trace")));
+		GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, FString::Printf(TEXT("Fire trace")));
 	}
 
-	GetWorld()->GetTimerManager().SetTimer(ReloadTimer, this, &ACannon::Reload, 1 / FireRate, false);
+	GetWorld()->GetTimerManager().SetTimer(ReloadTimer, this, &ACannon::Reload, FireRate, false);
+}
+
+void ACannon::FireSpecial()
+{
+	if (!isReadyToFire())
+	{
+		return;
+	}
+	bReadyToFire = false;
+
+	for (int i = 1; i <= NumberOfShellsInBurst; i++)
+	{
+		if (CannoType == ECannonType::FireProjectile)
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, FString::Printf(TEXT("Fire projectile (special attack) %i / %i"), i, NumberOfShellsInBurst));
+		}
+		else
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, FString::Printf(TEXT("Fire trace (special attack) %i / %i"), i, NumberOfShellsInBurst));
+		}
+		
+		//GetWorld()->GetTimerManager().SetTimer(BurstReloadTimer, this, &ACannon::Burst, BurstRate, false);
+	}
+
+	GetWorld()->GetTimerManager().SetTimer(ReloadTimer, this, &ACannon::Reload, FireRate, false);
 }
 
 void ACannon::Reload()
 {
 	bReadyToFire = true;
+	GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Emerald, FString::Printf(TEXT("RELOAD")));
+}
+
+void ACannon::Burst()
+{
+	
 }
 
 bool ACannon::isReadyToFire()

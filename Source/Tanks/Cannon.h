@@ -19,42 +19,51 @@ public:
 	void FireSpecial();
 	void Reload();
 	bool isReadyToFire();
-	void ShellsInTank();
 	void PrintNoShells();
-
+	void AddShells(int32);
+	
 	FTimerHandle ReloadTimer;
-	FTimerHandle BurstReloadTimer;
+	FTimerHandle BurstTimer;
 
 protected:
 	virtual void BeginPlay() override;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
-		class UStaticMeshComponent* CannonMesh;
+	class UStaticMeshComponent* CannonMesh;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
-		class UArrowComponent* ProjectileSpawnPoint;
+	class UArrowComponent* ProjectileSpawnPoint;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
-		ECannonType CannoType = ECannonType::FireProjectile;
+	ECannonType CannonType = ECannonType::FireProjectile;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fire params")
-		float FireRate = 1.0f;
+	float FireRate = 1.0f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fire params")
-		float FireRange = 1000.0f;
+	float FireRange = 1000.0f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fire params")
-		float FireDamage = 1.0f;
+	float FireDamage = 1.0f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fire params")
-		int NumberOfShellsInTank = 10;
+	int32 NumberOfShellsInTank = 10;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fire params")
+	TSubclassOf<class AProjectile> ProjectileClass;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fire params|Burst")
-		int NumberOfShellsInBurst = 3;
+	int32 NumberOfShellsInBurst = 3;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fire params|Burst")
-		float BurstRate = 1.0f;
+	float BurstRate = 1.0f;
 
 private:
 	bool bReadyToFire = false;
+
+	int32 CurrentBurst = 0;
+
+	void Burst();
+	void FireProjectile();
+	void FireTrace();
 };

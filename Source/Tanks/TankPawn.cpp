@@ -43,7 +43,7 @@ void ATankPawn::BeginPlay()
 	Super::BeginPlay();
 
 	TankController = Cast<ATankController>(GetController());
-	SetupCannon();
+	SetupCannon(CannonClass);
 }
 
 void ATankPawn::Tick(float DeltaTime)
@@ -59,7 +59,7 @@ void ATankPawn::Tick(float DeltaTime)
 
 	//BodyRotation
 	CurrentRightAxixValue = FMath::Lerp(CurrentRightAxixValue, RotateRightAxisValue, RotateInterpolationKey);
-	UE_LOG(LogTemp, Warning, TEXT("CurrentRightAxixValue %f, RotateRightAxixValue %f"), CurrentRightAxixValue, RotateRightAxisValue);
+	//UE_LOG(LogTemp, Warning, TEXT("CurrentRightAxixValue %f, RotateRightAxixValue %f"), CurrentRightAxixValue, RotateRightAxisValue);
 
 	float yawRotation = CurrentRightAxixValue * RotationSpeed * DeltaTime;
 	FRotator currentRotation = GetActorRotation();
@@ -95,9 +95,9 @@ void ATankPawn::RotateRight(float Value)
 	RotateRightAxisValue = Value;
 }
 
-void ATankPawn::SetupCannon()
+void ATankPawn::SetupCannon(TSubclassOf<ACannon> newCannon)
 {
-	if (!CannonClass)
+	if (!newCannon)
 	{
 		return;
 	}
@@ -110,7 +110,7 @@ void ATankPawn::SetupCannon()
 	FActorSpawnParameters params;
 	params.Instigator = this;
 	params.Owner = this;
-	Cannon = GetWorld()->SpawnActor<ACannon>(CannonClass, params);
+	Cannon = GetWorld()->SpawnActor<ACannon>(newCannon, params);
 	Cannon->AttachToComponent(CannonSetupPoint, FAttachmentTransformRules::SnapToTargetIncludingScale);
 }
 
@@ -128,4 +128,18 @@ void ATankPawn::FireSpecial()
 	{
 		Cannon->FireSpecial();
 	}
+}
+
+
+void ATankPawn::AddShells(int32 Shells)
+{
+	if (Cannon)
+	{
+		Cannon->AddShells(Shells);
+	}
+}
+
+void ATankPawn::ChangeCannon()
+{
+
 }

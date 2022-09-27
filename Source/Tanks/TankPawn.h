@@ -23,48 +23,52 @@ public:
 	void MoveRight(float Value);
 	void RotateRight(float Value);
 
-	void SetupCannon();
+	void SetupCannon(TSubclassOf<ACannon> newCannon);
 	void Fire();
 	void FireSpecial();
+
+	void AddShells(int32);
+
+	void ChangeCannon();
 
 protected:
 	virtual void BeginPlay() override;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
-		UStaticMeshComponent* BodyMesh;
+	UStaticMeshComponent* BodyMesh;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
-		UStaticMeshComponent* TurretMesh;
+	UStaticMeshComponent* TurretMesh;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
-		class UBoxComponent* BoxCollision;
+	class UBoxComponent* BoxCollision;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
-		class USpringArmComponent* SpringArm;
+	class USpringArmComponent* SpringArm;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
-		class UCameraComponent* Camera;
+	class UCameraComponent* Camera;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cannon")
-		TSubclassOf<ACannon> CannonClass;
+	TSubclassOf<ACannon> CannonClass;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cannon")
-		class UArrowComponent* CannonSetupPoint;
+	class UArrowComponent* CannonSetupPoint;
 
 	UPROPERTY()
-		ACannon* Cannon;
+	ACannon* Cannon;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement|Speed")
-		float MovementSpeed = 300.0f;
+	float MovementSpeed = 300.0f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement|Speed")
-		float RotationSpeed = 100.0f;
+	float RotationSpeed = 100.0f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement|Speed")
-		float RotateInterpolationKey = 0.1f;
+	float RotateInterpolationKey = 0.1f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Turret|Speed")
-		float TurretInterpolationKey = 0.1f;
+	float TurretInterpolationKey = 0.1f;
 
 private:
 	class ATankController* TankController;

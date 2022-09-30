@@ -10,6 +10,7 @@
 #include "Components/StaticMeshComponent.h"
 #include "Cannon.h"
 #include "Components/ArrowComponent.h"
+#include "HealthComponent.h"
 
 ATankPawn::ATankPawn()
 {
@@ -36,6 +37,10 @@ ATankPawn::ATankPawn()
 
 	CannonSetupPoint = CreateDefaultSubobject<UArrowComponent>(TEXT("CannonSetupPoint"));
 	CannonSetupPoint->SetupAttachment(TurretMesh);
+
+	HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("HEalthComponent"));
+	HealthComponent->OnDie.AddUObject(this, &ATankPawn::Die);
+	HealthComponent->OnHealthChanged.AddUObject(this, &ATankPawn::DamageTaked);
 }
 
 void ATankPawn::BeginPlay()
@@ -137,6 +142,28 @@ void ATankPawn::AddShells(int32 Shells)
 	{
 		Cannon->AddShells(Shells);
 	}
+}
+
+
+void ATankPawn::TakeDamage(FDamageData DamageData)
+{
+	HealthComponent->TakeDamage(DamageData);
+}
+
+void ATankPawn::Die()
+{
+	if (Cannon)
+	{
+		Cannon->Destroy();
+	}
+	UE_LOG(LogTemp, Warning, TEXT("Tank %s is die, health: %f"), *GetName(), HealthComponent->GetHealth());
+	Destroy();
+}
+
+
+void ATankPawn::DamageTaked(float Value)
+{
+	UE_LOG(LogTemp, Warning, TEXT("Tank %s taked damage: %f, health: %f"), *GetName(), Value, HealthComponent->GetHealth());
 }
 
 void ATankPawn::ChangeCannon()

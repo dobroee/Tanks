@@ -44,7 +44,7 @@ protected:
 	float FireRange = 1000.0f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fire params")
-	float FireDamage = 1.0f;
+	float Damage = 3.0f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fire params")
 	int32 NumberOfShellsInTank = 10;

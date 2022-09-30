@@ -7,6 +7,7 @@
 #include "Components/SceneComponent.h"
 #include "TimerManager.h"
 #include "Projectile.h"
+#include "DamageTaker.h"
 
 ACannon::ACannon()
 {
@@ -24,8 +25,6 @@ ACannon::ACannon()
 
 void ACannon::FireProjectile()
 {
-	//GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Green, FString::Printf(TEXT("Fire projectile")));
-
 	AProjectile* projectile = GetWorld()->SpawnActor<AProjectile>(ProjectileClass, ProjectileSpawnPoint->GetComponentLocation(), ProjectileSpawnPoint->GetComponentRotation());
 	if (projectile)
 	{
@@ -35,21 +34,29 @@ void ACannon::FireProjectile()
 
 void ACannon::FireTrace()
 {
-	//GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Green, FString::Printf(TEXT("Fire trace")));
 	FHitResult hitResult;
-	FCollisionQueryParams traceParams;
+	FCollisionQueryParams traceParams = FCollisionQueryParams(FName(TEXT("FireTrace")), true, this);
 	traceParams.bTraceComplex = true;
 	traceParams.bReturnPhysicalMaterial = false;
 
 	FVector Start = ProjectileSpawnPoint->GetComponentLocation();
 	FVector End = Start + ProjectileSpawnPoint->GetForwardVector() * FireRange;
 
-	if (GetWorld()->LineTraceSingleByChannel(hitResult, Start, End, ECollisionChannel::ECC_GameTraceChannel1, traceParams))
+	if (GetWorld()->LineTraceSingleByChannel(hitResult, Start, End, ECollisionChannel::ECC_Visibility, traceParams))
 	{
-		DrawDebugLine(GetWorld(), Start, hitResult.Location, FColor::Purple, false, 1.0f, 0, 15.0f);
+		DrawDebugLine(GetWorld(), Start, hitResult.Location, FColor::Cyan, false, 1.0f, 0, 15.0f);
+		IDamageTaker* DamageTakerActor = Cast<IDamageTaker>(hitResult.GetActor());
 		if (hitResult.GetActor())
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Trace overlap : %s"), *hitResult.GetActor()->GetActorLabel());
+			FDamageData damageData;
+			damageData.DamageValue = Damage;
+			damageData.Instigator = GetOwner();
+			damageData.DamageMaker = this;
+
+			DamageTakerActor->TakeDamage(damageData);
+		}
+		else
+		{
 			hitResult.GetActor()->Destroy();
 		}
 	}

@@ -38,5 +38,5 @@ protected:
 	float MoveRate = 0.005f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Damage")
-		float Damagee = 1.0f;
+	float Damage = 1.0f;
 };

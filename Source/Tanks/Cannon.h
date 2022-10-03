@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "GameStruct.h"
+#include "ProjectilePool.h"
 #include "Cannon.generated.h"
 
 UCLASS()
@@ -21,6 +22,7 @@ public:
 	bool isReadyToFire();
 	void PrintNoShells();
 	void AddShells(int32);
+	void CreateProjectilePool();
 	
 	FTimerHandle ReloadTimer;
 	FTimerHandle BurstTimer;
@@ -51,6 +53,12 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fire params")
 	TSubclassOf<class AProjectile> ProjectileClass;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
+	TSubclassOf<AProjectilePool> ProjectilePoolClass;
+
+	UPROPERTY()
+	AProjectilePool* ProjectilePool;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fire params|Burst")
 	int32 NumberOfShellsInBurst = 3;

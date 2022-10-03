@@ -28,6 +28,16 @@ AProjectile::AProjectile()
 void AProjectile::Start()
 {
 	GetWorld()->GetTimerManager().SetTimer(MoveTimer, this, &AProjectile::Move, MoveRate, true, MoveRate);
+	GetWorld()->GetTimerManager().SetTimer(DeactivationTimer, this, &AProjectile::Deactivation, DeactivateTime, false);
+}
+
+void AProjectile::Deactivation()
+{
+	bIsActivation = false;
+	SetActorLocation(FVector(0.0f, 0.0f, -50.0f));
+	GetWorld()->GetTimerManager().ClearTimer(DeactivationTimer);
+	GetWorld()->GetTimerManager().ClearTimer(MoveTimer);
+	SetActorEnableCollision(false);
 }
 
 void AProjectile::Move()
@@ -55,6 +65,7 @@ void AProjectile::OnMeshOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor
 			OtherActor->Destroy();
 		}
 	}
-	Destroy();
+	Deactivation();
+	//Destroy();
 }
 

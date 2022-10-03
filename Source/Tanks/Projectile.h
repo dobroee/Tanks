@@ -17,6 +17,11 @@ public:
 	void Start();
 
 	FTimerHandle MoveTimer;
+	FTimerHandle DeactivationTimer;
+
+	void Deactivation();
+
+	bool bIsActivation = false;
 
 protected:
 	UFUNCTION()
@@ -39,4 +44,7 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Damage")
 	float Damage = 1.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Component")
+	float DeactivateTime = 10.0f;
 };

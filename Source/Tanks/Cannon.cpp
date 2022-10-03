@@ -25,10 +25,19 @@ ACannon::ACannon()
 
 void ACannon::FireProjectile()
 {
-	AProjectile* projectile = GetWorld()->SpawnActor<AProjectile>(ProjectileClass, ProjectileSpawnPoint->GetComponentLocation(), ProjectileSpawnPoint->GetComponentRotation());
-	if (projectile)
+	if (ProjectilePool)
 	{
-		projectile->Start();
+		ProjectilePool->GetProjectile(ProjectileSpawnPoint->GetComponentLocation(), ProjectileSpawnPoint->GetComponentRotation());
+	}
+	else
+	{
+		FActorSpawnParameters spawnParams;
+		spawnParams.Owner = this;
+		AProjectile* projectile = GetWorld()->SpawnActor<AProjectile>(ProjectileClass, ProjectileSpawnPoint->GetComponentLocation(), ProjectileSpawnPoint->GetComponentRotation());
+		if (projectile)
+		{
+			projectile->Start();
+		}
 	}
 }
 
@@ -63,6 +72,14 @@ void ACannon::FireTrace()
 	else
 	{
 		DrawDebugLine(GetWorld(), Start, End, FColor::Red, false, 1.0f, 0, 15.0f);
+	}
+}
+
+void ACannon::CreateProjectilePool()
+{
+	if (ProjectilePoolClass)
+	{
+		ProjectilePool = GetWorld()->SpawnActor<AProjectilePool>(ProjectileClass, ProjectileSpawnPoint->GetComponentLocation(), ProjectileSpawnPoint->GetComponentRotation());
 	}
 }
 
@@ -158,4 +175,5 @@ void ACannon::BeginPlay()
 {
 	Super::BeginPlay();
 	Reload();
+	CreateProjectilePool();
 }

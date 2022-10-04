@@ -8,6 +8,8 @@
 #include "TimerManager.h"
 #include "Projectile.h"
 #include "DamageTaker.h"
+#include "Components/AudioComponent.h"
+#include "Particles/ParticleSystemComponent.h"
 
 ACannon::ACannon()
 {
@@ -21,6 +23,13 @@ ACannon::ACannon()
 
 	ProjectileSpawnPoint = CreateDefaultSubobject<UArrowComponent>(TEXT("ProjectileSpawnPoint"));
 	ProjectileSpawnPoint->SetupAttachment(CannonMesh);
+
+	ShotSound = CreateDefaultSubobject<UAudioComponent>(TEXT("ShotSound"));
+	ShotSound->SetAutoActivate(false);
+
+	ShotEffect = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("ShotEffect"));
+	ShotEffect->SetAutoActivate(false);
+	ShotEffect->SetupAttachment(ProjectileSpawnPoint);
 }
 
 void ACannon::FireProjectile()
@@ -79,7 +88,7 @@ void ACannon::CreateProjectilePool()
 {
 	if (ProjectilePoolClass)
 	{
-		ProjectilePool = GetWorld()->SpawnActor<AProjectilePool>(ProjectileClass, ProjectileSpawnPoint->GetComponentLocation(), ProjectileSpawnPoint->GetComponentRotation());
+		ProjectilePool = GetWorld()->SpawnActor<AProjectilePool>(ProjectilePoolClass, ProjectileSpawnPoint->GetComponentLocation(), ProjectileSpawnPoint->GetComponentRotation());
 	}
 }
 
@@ -97,6 +106,14 @@ void ACannon::Fire()
 
 	bReadyToFire = false;
 	NumberOfShellsInTank--;
+
+	ShotEffect->ActivateSystem();
+	ShotSound->Play();
+
+	if (CameraShake)
+	{
+		GetWorld()->GetFirstPlayerController()->ClientPlayCameraShake(CameraShake);
+	}
 
 	if (CannonType == ECannonType::FireProjectile)
 	{

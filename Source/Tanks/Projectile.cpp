@@ -65,7 +65,7 @@ void AProjectile::OnMeshOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor
 			OtherActor->Destroy();
 		}
 	}
-	Deactivation();
-	//Destroy();
+	//Deactivation();
+	Destroy();
 }
 

@@ -39,8 +39,27 @@ public:
 	UFUNCTION()
 	virtual void TakeDamage(FDamageData DamageData) override;
 
+	float GetMovementAccurency() const { return MovementAccurency; }
+	TArray<FVector> GetPatrollingPoints() const { return PatrollingPoints; }
+
+	ACannon* GetCannon() const { return Cannon; }
+
+	UFUNCTION()
+	FVector GetTurretForwardVector();
+
+	UFUNCTION()
+	void RotateTurretTo(FVector TargetPosition);
+
+	FVector GetEyesPosition() const;
+
 protected:
 	virtual void BeginPlay() override;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AIComponents")
+	float MovementAccurency = 50.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AIComponents", Meta = (MakeEditWidget = true))
+	TArray<FVector> PatrollingPoints;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
 	UStaticMeshComponent* BodyMesh;

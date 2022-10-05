@@ -106,6 +106,22 @@ protected:
 	void Die();
 	void DamageTaked(float Value);
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effects")
+	class UAudioComponent* DamageTakedSound;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effects")
+	class UParticleSystemComponent* DamageTakedEffect;
+
+	UParticleSystemComponent* DieEffect;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effects")
+	UParticleSystem* DieParticle;
+
+	//UAudioComponent* DieSound;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effects")
+	USoundBase* DieSound;
+
 private:
 	class ATankController* TankController;
 

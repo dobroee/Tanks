@@ -11,6 +11,9 @@
 #include "Cannon.h"
 #include "Components/ArrowComponent.h"
 #include "HealthComponent.h"
+#include "Components/AudioComponent.h"
+#include "Particles/ParticleSystemComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 ATankPawn::ATankPawn()
 {
@@ -38,9 +41,16 @@ ATankPawn::ATankPawn()
 	CannonSetupPoint = CreateDefaultSubobject<UArrowComponent>(TEXT("CannonSetupPoint"));
 	CannonSetupPoint->SetupAttachment(TurretMesh);
 
-	HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("HEalthComponent"));
+	HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("HealthComponent"));
 	HealthComponent->OnDie.AddUObject(this, &ATankPawn::Die);
 	HealthComponent->OnHealthChanged.AddUObject(this, &ATankPawn::DamageTaked);
+
+	DamageTakedSound = CreateDefaultSubobject<UAudioComponent>(TEXT("DamageTakedSound"));
+	DamageTakedSound->SetAutoActivate(false);
+
+	DamageTakedEffect = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("DamageTakedEffect"));
+	DamageTakedEffect->SetAutoActivate(false);
+	DamageTakedEffect->SetupAttachment(TurretMesh);
 }
 
 void ATankPawn::BeginPlay()
@@ -169,14 +179,24 @@ void ATankPawn::Die()
 	{
 		Cannon->Destroy();
 	}
+	
 	UE_LOG(LogTemp, Warning, TEXT("Tank %s is die, health: %f"), *GetName(), HealthComponent->GetHealth());
+
+	DieEffect = UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), DieParticle, GetActorLocation());
+
+	UGameplayStatics::PlaySoundAtLocation(GetWorld(), DieSound, GetActorLocation());
+
 	Destroy();
 }
 
 void ATankPawn::DamageTaked(float Value)
 {
 	UE_LOG(LogTemp, Warning, TEXT("Tank %s taked damage: %f, health: %f"), *GetName(), Value, HealthComponent->GetHealth());
+
+	DamageTakedEffect->ActivateSystem();
+	DamageTakedSound->Play();
 }
+
 
 void ATankPawn::ChangeCannon()
 {

@@ -10,6 +10,8 @@ UCLASS()
 class TANKS_API AProjectile : public AActor
 {
 	GENERATED_BODY()
+
+	DECLARE_EVENT_OneParam(AProjectile, FOnKill, float);
 	
 public:	
 	AProjectile();
@@ -20,6 +22,8 @@ public:
 	FTimerHandle DeactivationTimer;
 
 	void Deactivation();
+
+	FOnKill OnKilled;
 
 	bool bIsActivation = false;
 

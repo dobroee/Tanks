@@ -173,6 +173,19 @@ FVector ATankPawn::GetEyesPosition() const
 	return CannonSetupPoint->GetComponentLocation();
 }
 
+
+float ATankPawn::GetPoints()
+{
+	return ScoreValue;
+}
+
+
+void ATankPawn::ShowScore(float Value)
+{
+	Score += Value;
+	GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Green, FString::Printf(TEXT("Score: %f"), Score));
+}
+
 void ATankPawn::Die()
 {
 	if (Cannon)

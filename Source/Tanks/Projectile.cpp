@@ -8,6 +8,7 @@
 #include "Components/PrimitiveComponent.h"
 #include "DamageTaker.h"
 #include "GameStruct.h"
+#include "IScorable.h"
 
 AProjectile::AProjectile()
 {
@@ -48,17 +49,38 @@ void AProjectile::Move()
 
 void AProjectile::OnMeshOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (OtherActor)
+
+	AActor* owner = GetOwner();
+	AActor* ownerByOwner = owner != nullptr ? owner->GetOwner() : nullptr;
+
+	if (OtherActor != owner && OtherActor != ownerByOwner)
 	{
 		IDamageTaker* DamageTakerActor = Cast<IDamageTaker>(OtherActor);
+		IIScorable* ScorableActor = Cast<IIScorable>(OtherActor);
+
+		float ScoreValue = 0.0f;
+
+		if (ScorableActor)
+		{
+			ScoreValue = ScorableActor->GetPoints();
+		}
+
 		if (DamageTakerActor)
 		{
 			FDamageData damageData;
 			damageData.DamageValue = Damage;
-			damageData.Instigator = GetOwner();
+			damageData.Instigator = owner;
 			damageData.DamageMaker = this;
 
 			DamageTakerActor->TakeDamage(damageData);
+
+			if (OtherActor->IsActorBeingDestroyed() && ScoreValue != 0.0f)
+			{
+				if (OnKilled.IsBound())
+				{
+					OnKilled.Broadcast(ScoreValue);
+				}
+			}
 		}
 		else
 		{

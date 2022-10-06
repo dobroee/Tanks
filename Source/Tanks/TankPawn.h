@@ -6,13 +6,14 @@
 #include "GameFramework/Pawn.h"
 #include "GameStruct.h"
 #include "DamageTaker.h"
+#include "IScorable.h"
 #include "TankPawn.generated.h"
 
 class UStaticMeshComponent;
 class ACannon;
 
 UCLASS()
-class TANKS_API ATankPawn : public APawn, public IDamageTaker
+class TANKS_API ATankPawn : public APawn, public IDamageTaker, public IIScorable
 {
 	GENERATED_BODY()
 
@@ -51,6 +52,16 @@ public:
 	void RotateTurretTo(FVector TargetPosition);
 
 	FVector GetEyesPosition() const;
+
+	virtual float GetPoints() override;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Score")
+	float ScoreValue = 0;
+
+	UFUNCTION()
+	void ShowScore(float Value);
+
+	float Score = 0.0f;
 
 protected:
 	virtual void BeginPlay() override;

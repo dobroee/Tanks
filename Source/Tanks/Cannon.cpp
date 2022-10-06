@@ -45,6 +45,8 @@ void ACannon::FireProjectile()
 		AProjectile* projectile = GetWorld()->SpawnActor<AProjectile>(ProjectileClass, ProjectileSpawnPoint->GetComponentLocation(), ProjectileSpawnPoint->GetComponentRotation());
 		if (projectile)
 		{
+			projectile->OnKilled.AddUObject(this, &ACannon::AddScore);
+			projectile->SetOwner(this);
 			projectile->Start();
 		}
 	}
@@ -92,6 +94,14 @@ void ACannon::CreateProjectilePool()
 	}
 }
 
+void ACannon::AddScore(float ScoreValue)
+{
+	if (ScoreChanged.IsBound())
+	{
+		ScoreChanged.Broadcast(ScoreValue);
+	}
+}
+
 void ACannon::Fire()
 {
 	if (NumberOfShellsInTank == 0)
@@ -112,7 +122,7 @@ void ACannon::Fire()
 
 	if (CameraShake)
 	{
-		GetWorld()->GetFirstPlayerController()->ClientPlayCameraShake(CameraShake);
+		GetWorld()->GetFirstPlayerController()->ClientStartCameraShake(CameraShake);
 	}
 
 	if (CannonType == ECannonType::FireProjectile)
@@ -145,7 +155,7 @@ void ACannon::FireSpecial()
 void ACannon::Reload()
 {
 	bReadyToFire = true;
-	GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, FString::Printf(TEXT("Shells in tank - %i"), NumberOfShellsInTank));
+	//GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, FString::Printf(TEXT("Shells - %i"), NumberOfShellsInTank));
 }
 
 bool ACannon::isReadyToFire()
@@ -172,7 +182,7 @@ void ACannon::Burst()
 		bReadyToFire = true;
 		CurrentBurst = 0;
 		NumberOfShellsInTank--;
-		GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, FString::Printf(TEXT("Shells in tank - %i"), NumberOfShellsInTank));
+		//GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, FString::Printf(TEXT("Shells - %i"), NumberOfShellsInTank));
 		return;
 	}
 

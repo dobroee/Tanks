@@ -7,10 +7,11 @@
 #include "Cannon.h"
 #include "DamageTaker.h"
 #include "GameStruct.h"
+#include "IScorable.h"
 #include "Turret.generated.h"
 
 UCLASS()
-class TANKS_API ATurret : public AActor, public IDamageTaker
+class TANKS_API ATurret : public AActor, public IDamageTaker//, public IIScorable
 {
 	GENERATED_BODY()
 	
@@ -88,4 +89,7 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effects")
 	USoundBase* DieSound;
+
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Score")
+	//float ScoreValue = 0;
 };

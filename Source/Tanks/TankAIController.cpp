@@ -74,13 +74,10 @@ void ATankAIController::Targeting()
 
 	if (IsPlayerInRange() && IsPlayerSeen())
 	{
+		RotateToPlayer();
 		if (CanFire())
 		{
 			Fire();
-		}
-		else
-		{
-			RotateToPlayer();
 		}
 	}
 }
@@ -138,6 +135,6 @@ bool ATankAIController::IsPlayerSeen()
 			}
 		}
 	}
-	DrawDebugLine(GetWorld(), eyesPos, playerPos, FColor::Black, false, 0.5f, 0, 10.0f);
+	//DrawDebugLine(GetWorld(), eyesPos, playerPos, FColor::Black, false, 0.5f, 0, 10.0f);
 	return false;
 }

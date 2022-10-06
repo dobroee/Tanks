@@ -117,8 +117,6 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effects")
 	UParticleSystem* DieParticle;
 
-	//UAudioComponent* DieSound;
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effects")
 	USoundBase* DieSound;
 

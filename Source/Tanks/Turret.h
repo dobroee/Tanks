@@ -27,11 +27,14 @@ protected:
 	bool IsPlayerInRange();
 	bool CanFire();
 	void Fire();
+	bool IsPlayerSeen();
 
 	void SetupCannon();
 
 	void Destroyed();
 	void DamageTaked(float Value);
+
+	FVector GetEyesPosition() const;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
 	UStaticMeshComponent* BodyMesh;
@@ -71,4 +74,18 @@ protected:
 
 	const FString BodyMeshPath = "StaticMesh'/Game/CSC/Meshes/SM_CSC_Tower1.SM_CSC_Tower1'";
 	const FString TurretMeshPath = "StaticMesh'/Game/CSC/Meshes/SM_CSC_Gun1.SM_CSC_Gun1'";
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effects")
+	class UAudioComponent* DamageTakedSound;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effects")
+	class UParticleSystemComponent* DamageTakedEffect;
+
+	UParticleSystemComponent* DieEffect;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effects")
+	UParticleSystem* DieParticle;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effects")
+	USoundBase* DieSound;
 };
